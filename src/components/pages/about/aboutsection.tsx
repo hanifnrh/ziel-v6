@@ -72,27 +72,43 @@ function AboutSection() {
           <div className="flex flex-col items-start justify-center w-full h-full col-span-2 xs:col-span-2 md:col-span-4 bg-white rounded-[24px] p-4 gap-1">
             <div className="w-full items-center justify-between flex md:grid md:grid-cols-2 lg:flex md:gap-4 lg:gap-0">
               <div className="w-full items-center justify-center flex col-span-1">
-                <div className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
+                <a
+                href="https://www.instagram.com/ziel.works/"
+                rel="canonical"
+                target="_blank"
+                className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
                   <Instagram className="text-pink-500 w-6 h-6" />
-                </div>
+                </a>
               </div>
 
               <div className="w-full items-center justify-center flex col-span-1">
-                <div className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
+                <a
+                  href="https://dribbble.com/ziel_works"
+                rel="canonical"
+                target="_blank"
+                className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
                   <Dribbble className="text-purple-500 w-6 h-6" />
-                </div>
+                </a>
               </div>
 
               <div className="w-full items-center justify-center flex col-span-1">
-                <div className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
+                <a
+                          href="https://github.com/hanifnrh"
+                rel="canonical"
+                target="_blank"
+                className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
                   <Github className="text-neutral-900 w-6 h-6" />
-                </div>
+                </a>
               </div>
 
               <div className="w-full items-center justify-center flex col-span-1">
-                <div className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
+                <a
+                href="https://www.linkedin.com/in/nurrahmathanif/"
+                rel="canonical"
+                target="_blank"
+                className="w-fit md:w-full lg:w-fit flex items-center justify-center bg-linear-to-b from-white to-[#F3F3F3] p-2.5 md:p-2 lg:p-2.5 rounded-full border-3 border-slate-200">
                   <Linkedin className="text-blue-500 w-6 h-6" />
-                </div>
+                </a>
               </div>
             </div>
             <div className="w-fit flex items-center gap-3">
