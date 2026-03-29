@@ -172,7 +172,13 @@ const experiencesData: ExperienceData[] = [
     company: "Action Lab, Monash University",
     duration: "Jan 2026 - Present",
     location: "BSD City, Tangerang, Indonesia",
-    descriptions: ["TBA."],
+    descriptions: [
+      "Working on two projects: Kita Bersama & Scam Resilient Digital Finance",
+      "In Kita Bersama project, I do UI design and UX research for a youth-led, youth-centered digital platform aimed at preventing and reducing the mental health impacts of Adverse Childhood Experiences (ACEs) among Indonesian youth (10-24 years) in West Java and East Kalimantan. The project addresses the critical gap in help-seeking behavior (<11%) and rising mental health prevalence by developing a culturally relevant digital solution.",
+      "Conducted iterative, agile-driven design based on co-design workshops with interdisciplinary research group (public health, psychology, physiotherapy) and direct community consultations. Designed a responsive web platform optimized for mobile-first users in Indonesia.",
+      "Architected the user experience for multiple core modules: Peer-Support Forum, Connection to Formal Mental Health Care, Psychosocial and Self-Development Skills, and Gamification Features.",
+      "In Scam Resilient Digital Finance, I execute UI design based on a comprehensive UI/UX design framework to combat digital fraud in Indonesia's socio-technical context. Synthesized findings from a systematic literature review and primary qualitative research (interviews with fraud victims and institutional stakeholders) to address the psychological precision of deception tactics.",
+    ],
     badgeType: "contract",
     badgeText: "Full Time", // Optional override
   },

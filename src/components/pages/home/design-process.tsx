@@ -38,7 +38,7 @@ function DesignProcess() {
           <ChevronsRight className="text-neutral-600" size={40} />
         </div>
 
-         <div className="inline-flex base:hidden py-4 md:py-10 3xl:py-14">
+         <div className="inline-flex base:hidden py-4 md:py-10 3xl:py-14 animate-bounce">
           <ChevronsDown className="text-neutral-600" size={32} />
         </div>
 
@@ -63,7 +63,7 @@ function DesignProcess() {
           <ChevronsRight className="text-neutral-600" size={40} />
         </div>
 
-         <div className="inline-flex base:hidden py-4 md:py-10 3xl:py-14">
+         <div className="inline-flex base:hidden py-4 md:py-10 3xl:py-14 animate-bounce">
           <ChevronsDown className="text-neutral-600" size={32} />
         </div>
 
