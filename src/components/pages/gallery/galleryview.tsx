@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { parseTags } from "@/lib/tags"; // import your tag utility
 import { useEffect, useState } from "react";
+import { Loader } from "@/components/ui/loader";
 
 // Types based on Hygraph schema
 interface HygraphImage {
@@ -267,7 +268,7 @@ function GalleryView() {
           <ColorDots />
         </div>
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-500"></div>
+          <Loader/>
         </div>
       </section>
     );
