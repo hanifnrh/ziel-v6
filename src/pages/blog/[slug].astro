@@ -1,0 +1,188 @@
+---
+import HeaderBlue from "@/components/pages/header-blue";
+import Navbar from "@/components/pages/navbar";
+import { MoveLeft } from "lucide-react";
+import "../../styles/global.css";
+
+import { renderRichText } from "@/lib/richText";
+import { formatDate } from "@/lib/date";
+import { parseTags } from "@/lib/tags";
+
+const currentPath = Astro.url.pathname;
+
+// Get all blog slugs for static paths
+export async function getStaticPaths() {
+  const response = await fetch(import.meta.env.PUBLIC_HYGRAPH_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.PUBLIC_HYGRAPH_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query: `
+        query GetAllBlogs {
+          blogs {
+            slug
+          }
+        }
+      `,
+    }),
+  });
+
+  const json = await response.json();
+  const blogs = json.data?.blogs ?? [];
+  return blogs.map((blog: { slug: string }) => ({
+    params: { slug: blog.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+const response = await fetch(import.meta.env.PUBLIC_HYGRAPH_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${import.meta.env.PUBLIC_HYGRAPH_TOKEN}`,
+  },
+  body: JSON.stringify({
+    query: `
+      query GetBlogBySlug($slug: String!) {
+        blog(where: { slug: $slug }) {
+          title
+          description
+          content { json }
+          publishDate
+          featuredImage { url }
+          tag
+        }
+      }
+    `,
+    variables: { slug },
+  }),
+});
+
+const json = await response.json();
+
+if (json.errors) {
+  throw new Error(`Failed to fetch blog: ${json.errors[0].message}`);
+}
+
+const blog = json.data?.blog;
+
+if (!blog) {
+  return Astro.redirect("/404");
+}
+
+const tagsWithColors = parseTags(blog.tag);
+
+// Render rich text content – handle array structure
+let contentHtml = "";
+if (blog.content) {
+  if (Array.isArray(blog.content)) {
+    contentHtml = blog.content
+      .map((item: any) => {
+        const root = item.json;
+        if (root && root.children) {
+          return root.children
+            .map((child: any) => renderRichText(child))
+            .join("");
+        } else if (root) {
+          return renderRichText(root);
+        }
+        return "";
+      })
+      .join("");
+  } else if (blog.content.json) {
+    const root = blog.content.json;
+    if (root.children) {
+      contentHtml = root.children
+        .map((child: any) => renderRichText(child))
+        .join("");
+    } else {
+      contentHtml = renderRichText(root);
+    }
+  }
+}
+---
+
+<!-- Meta tags -->
+<title>{blog.title} | Ziel's Blog</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content={blog.description} />
+<meta property="og:title" content={blog.title} />
+<meta property="og:description" content={blog.description} />
+<meta property="og:image" content={blog.featuredImage.url} />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+  rel="stylesheet"
+/>
+
+<body>
+  <HeaderBlue />
+  <Navbar currentPath={currentPath} />
+  <section class="flex flex-col items-center justify-center mt-12 pb-20 lg:mt-0 z-10">
+    <div class="flex flex-col px-4 sm:px-12 xl:px-0 max-w-4xl pb-10 gap-4 lg:gap-8">
+      <div class="sticky top-4 z-10 bg-white/80 backdrop-blur-sm rounded-xl p-2">
+        <div class="flex justify-between items-center w-full">
+          <a
+            href="/blog"
+            rel="canonical"
+            class="flex gap-2 text-neutral-900 outfit-regular text-base px-4 py-4 hover:bg-sky-100 rounded-xl hover:text-sky-600 transition-all w-fit"
+          >
+            <MoveLeft />
+            Back
+          </a>
+          <div class="flex w-full items-center justify-end gap-2 px-4 py-2">
+            <div class="w-4 h-4 bg-violet-400 rounded-full"></div>
+            <div class="w-4 h-4 bg-emerald-400 rounded-full"></div>
+            <div class="w-12 h-4 bg-sky-400 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <img
+          src={blog.featuredImage?.url || "/images/fallback.png"}
+          width="1000"
+          height="600"
+          class="w-full aspect-[5/2] sm:aspect-[5/1] object-cover rounded-sm"
+          alt={blog.title}
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <p class="outfit-light text-neutral-700">{formatDate(blog.publishDate)}</p>
+        <h1 class="text-3xl text-neutral-900 outfit-medium">{blog.title}</h1>
+        <p class="outfit-light text-base sm:text-lg text-neutral-800">{blog.description}</p>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-2 text-violet-700">
+        {tagsWithColors.map((tag) => (
+          <span class={`${tag.border} ${tag.text} px-3 py-2 text-xs rounded-sm`}>
+            {tag.label}
+          </span>
+        ))}
+      </div>
+
+      <div class="flex flex-col gap-2 pt-10 border-t border-neutral-500/20">
+        {contentHtml ? (
+          <Fragment set:html={contentHtml} />
+        ) : (
+          <p class="text-neutral-500">No content available.</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- LENIS smooth scrolling -->
+  <script type="module">
+    import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.1.13/+esm";
+    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true, wheelMultiplier: 2 });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+  </script>
+</body>

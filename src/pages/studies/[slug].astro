@@ -1,0 +1,207 @@
+---
+// src/pages/studies/[slug].astro
+import Navbar from "@/components/pages/navbar";
+import "../../styles/global.css";
+import { MoveLeft } from "lucide-react";
+import HeaderBlue from "@/components/pages/header-blue";
+
+import { renderRichText } from "@/lib/richText";
+import { formatDate } from "@/lib/date";
+import { parseTags } from "@/lib/tags";
+
+const currentPath = Astro.url.pathname;
+
+// Get all project slugs for static paths
+export async function getStaticPaths() {
+  const response = await fetch(import.meta.env.PUBLIC_HYGRAPH_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.PUBLIC_HYGRAPH_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query: `
+        query GetAllProjects {
+          projects {
+            slug
+          }
+        }
+      `,
+    }),
+  });
+
+  const json = await response.json();
+  const projects = json.data?.projects ?? [];
+  return projects.map((project: { slug: string }) => ({
+    params: { slug: project.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+const response = await fetch(import.meta.env.PUBLIC_HYGRAPH_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${import.meta.env.PUBLIC_HYGRAPH_TOKEN}`,
+  },
+  body: JSON.stringify({
+    query: `
+      query GetProjectBySlug($slug: String!) {
+        project(where: { slug: $slug }) {
+          title
+          description
+          content { json }
+          publishDate
+          featuredImage { url }
+          tag
+        }
+      }
+    `,
+    variables: { slug },
+  }),
+});
+
+const json = await response.json();
+
+if (json.errors) {
+  throw new Error(`Failed to fetch project: ${json.errors[0].message}`);
+}
+
+const project = json.data?.project;
+
+if (!project) {
+  return Astro.redirect("/404");
+}
+
+const tagsWithColors = parseTags(project.tag);
+
+// Render rich text content – handle both array and object structures
+let contentHtml = "";
+if (project.content) {
+  if (Array.isArray(project.content)) {
+    contentHtml = project.content
+      .map((item: any) => {
+        const root = item.json;
+        if (root && root.children) {
+          return root.children
+            .map((child: any) => renderRichText(child))
+            .join("");
+        } else if (root) {
+          return renderRichText(root);
+        }
+        return "";
+      })
+      .join("");
+  } else if (project.content.json) {
+    const root = project.content.json;
+    if (root.children) {
+      contentHtml = root.children
+        .map((child: any) => renderRichText(child))
+        .join("");
+    } else {
+      contentHtml = renderRichText(root);
+    }
+  } else if (project.content.children) {
+    contentHtml = project.content.children
+      .map((child: any) => renderRichText(child))
+      .join("");
+  }
+}
+---
+
+<title>{project.title} |</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content={project.description} />
+<meta property="og:title" content={project.title} />
+<meta property="og:description" content={project.description} />
+<meta property="og:image" content={project.featuredImage.url} />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+  rel="stylesheet"
+/>
+
+<body class="flex flex-col items-center justify-center mt-12 lg:mt-0 z-10 pb-20">
+  <HeaderBlue />
+  <Navbar currentPath={currentPath} />
+  <div
+    class="flex flex-col px-4 sm:px-12 xl:px-0 max-w-4xl pb-10 gap-4 lg:gap-8"
+  >
+    <div
+      class="sticky top-4 z-10 bg-white/80 backdrop-blur-sm rounded-xl p-2"
+    >
+      <div class="flex justify-between items-center w-full">
+        <a
+          href="/studies"
+          rel="canonical"
+          class="flex gap-2 text-neutral-900 outfit-regular text-base px-4 py-4 hover:bg-sky-100 rounded-xl hover:text-sky-600 transition-all w-fit"
+        >
+          <MoveLeft />
+          Back
+        </a>
+
+        <div class="flex w-full items-center justify-end gap-2 px-4 py-2">
+          <div class="w-4 h-4 bg-violet-400 rounded-full"></div>
+          <div class="w-4 h-4 bg-emerald-400 rounded-full"></div>
+          <div class="w-12 h-4 bg-sky-400 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured image -->
+    <div>
+      <img
+        src={project.featuredImage.url}
+        width="1000"
+        height="600"
+        class="w-full aspect-[5/2] sm:aspect-[5/1] object-cover rounded-xl"
+        alt={project.title}
+      />
+    </div>
+
+    <!-- Title and description -->
+    <div class="flex flex-col gap-2">
+      <p class="outfit-light text-neutral-700">
+        {formatDate(project.publishDate)}
+      </p>
+      <h1 class="text-3xl text-neutral-900 outfit-medium">
+        {project.title}
+      </h1>
+      <p class="outfit-light text-base sm:text-lg text-neutral-800">
+        {project.description}
+      </p>
+    </div>
+
+    <!-- Tags -->
+    <div class="mt-6 flex flex-wrap gap-2 outfit-light">
+      {tagsWithColors.map((tag) => (
+        <span
+          class={`${tag.border} px-3 py-2 text-sm rounded-full ${tag.text}`}
+        >
+          {tag.label}
+        </span>
+      ))}
+    </div>
+
+    <!-- Rich text content -->
+    <div class="flex flex-col gap-2 pt-10 border-t border-neutral-500/20">
+      {contentHtml ? (
+        <Fragment set:html={contentHtml} />
+      ) : (
+        <p class="text-neutral-500">No content available.</p>
+      )}
+    </div>
+  </div>
+
+  <!-- LENIS via CDN -->
+  <script type="module">
+    import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.1.13/+esm";
+    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true, wheelMultiplier: 2 });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+  </script>
+</body>

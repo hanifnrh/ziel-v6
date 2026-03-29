@@ -1,0 +1,49 @@
+---
+import "../../styles/global.css";
+import Gallery from "./_gallery";
+const currentPath = Astro.url.pathname;
+---
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Gallery</title>
+  </head>
+
+  <body>
+    <main>
+      <!-- Astro will hydrate this React component -->
+      <Gallery currentPath={currentPath} client:load />
+    </main>
+    <!-- LENIS via CDN (THIS IS THE KEY) -->
+    <script type="module">
+      import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.1.13/+esm";
+
+      const lenis = new Lenis({
+        lerp: 0.08,
+        smoothWheel: true,
+        wheelMultiplier: 2,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+
+      requestAnimationFrame(raf);
+
+      console.log("LENIS RUNNING");
+      document.body.style.outline = "5px solid lime";
+    </script>
+  </body>
+</html>
