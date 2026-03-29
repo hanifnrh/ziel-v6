@@ -173,7 +173,7 @@ const experiencesData: ExperienceData[] = [
     duration: "Jan 2026 - Present",
     location: "BSD City, Tangerang, Indonesia",
     descriptions: [
-      "Working on two projects: Kita Bersama & Scam Resilient Digital Finance",
+      "Working on two projects: Kita Bersama & Scam Resilient Digital Finance.",
       "In Kita Bersama project, I do UI design and UX research for a youth-led, youth-centered digital platform aimed at preventing and reducing the mental health impacts of Adverse Childhood Experiences (ACEs) among Indonesian youth (10-24 years) in West Java and East Kalimantan. The project addresses the critical gap in help-seeking behavior (<11%) and rising mental health prevalence by developing a culturally relevant digital solution.",
       "Conducted iterative, agile-driven design based on co-design workshops with interdisciplinary research group (public health, psychology, physiotherapy) and direct community consultations. Designed a responsive web platform optimized for mobile-first users in Indonesia.",
       "Architected the user experience for multiple core modules: Peer-Support Forum, Connection to Formal Mental Health Care, Psychosocial and Self-Development Skills, and Gamification Features.",
