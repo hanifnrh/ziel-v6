@@ -19,26 +19,31 @@ const versionBadges = [
     label: "Version 1.0",
     color: "text-blue-600",
     borderColor: "border-[#dbeafe]",
+    href: "https://ziel-orcin.vercel.app/",
   },
   {
     label: "Version 2.0",
     color: "text-violet-600",
     borderColor: "border-[#ddd6ff]",
+    href: "https://zielporto.vercel.app/",
   },
   {
     label: "Version 3.0",
     color: "text-emerald-600",
     borderColor: "border-[#a4f4cf]",
+    href: "https://dailyziel.vercel.app/",
   },
   {
     label: "Version 4.0",
     color: "text-red-600",
     borderColor: "border-[#ffc9c9]",
+    href: "https://ziel-v4.vercel.app/",
   },
   {
     label: "Version 5.0",
     color: "text-yellow-600",
     borderColor: "border-[#fee685]",
+    href: "https://ziel-v5.vercel.app/",
   },
 ];
 
@@ -124,13 +129,18 @@ export default function Footer() {
 
           <div className="inline-flex flex-wrap items-start gap-[4px]">
             {versionBadges.map((badge, index) => (
-              <Badge
+              <a
                 key={index}
-                variant="outline"
-                className={`inline-flex items-center justify-center gap-2.5 px-3 py-1.5 rounded-xl ${badge.borderColor} ${badge.color} [font-family:'Outfit',Helvetica] font-light text-[10px] 3xl:text-sm tracking-[0] leading-[normal] hover:bg-transparent`}
+                href={badge.href}
+                className="inline-flex no-underline cursor-pointer"
               >
-                {badge.label}
-              </Badge>
+                <Badge
+                  variant="outline"
+                  className={`inline-flex items-center justify-center gap-2.5 px-3 py-1.5 rounded-xl ${badge.borderColor} ${badge.color} [font-family:'Outfit',Helvetica] font-light text-sm 3xl:text-sm tracking-[0] leading-[normal] hover:bg-transparent`}
+                >
+                  {badge.label}
+                </Badge>
+              </a>
             ))}
           </div>
         </div>

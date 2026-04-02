@@ -4,7 +4,6 @@ import Guestbook from "./_guestbook";
 const currentPath = Astro.url.pathname;
 ---
 
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -23,7 +22,7 @@ const currentPath = Astro.url.pathname;
   <body>
     <main>
       <!-- Astro will hydrate this React component -->
-      <Guestbook currentPath={currentPath} client:load />
+      <Guestbook currentPath={currentPath} client:only="react" />
     </main>
     <!-- LENIS via CDN (THIS IS THE KEY) -->
     <script type="module">

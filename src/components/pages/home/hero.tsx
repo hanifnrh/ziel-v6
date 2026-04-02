@@ -22,7 +22,7 @@ const tools = [
   },
 ];
 
-function Hero() {
+const Hero = () => {
   return (
     <div className="w-full">
       <img
