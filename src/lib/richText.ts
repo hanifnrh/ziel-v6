@@ -86,7 +86,7 @@ export function renderRichText(node: any, renderers: any = {}): string {
     case "code":
       return `<code class="bg-neutral-100 dark:bg-neutral-800 px-1 py-0.5 rounded text-sm font-mono">${children}</code>`;
     case "code-block":
-      return `<pre class="bg-neutral-100 dark:bg-neutral-800 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>${children}</code></pre>`;
+      return `<pre class="w-full block bg-neutral-100 dark:bg-neutral-800 p-4 rounded-lg overflow-x-auto text-sm font-mono"><code>${children}</code></pre>`;
     case "link":
     case "a":
       return `<a href="${node.href}" target="_blank" rel="noopener noreferrer" class="outfit-regular text-blue-600 hover:underline">${children}</a>`;
