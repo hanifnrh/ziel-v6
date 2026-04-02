@@ -2,16 +2,16 @@ import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 
 const linkItems = [
-  { label: "Analytics" },
-  { label: "About" },
-  { label: "Resume" },
-  { label: "Guestbook" },
+  { label: "Analytics", href: "https://cloud.umami.is/share/RX4yihtMS3ZY5OdK" },
+  { label: "About", href: "/about" },
+  { label: "Resume", href: "/resume" },
+  { label: "Guestbook", href: "/guestbook" },
 ];
 
 const contactItems = [
-  { label: "Email" },
-  { label: "Instagram" },
-  { label: "LinkedIn" },
+  { label: "Email", href: "mailto:your-email@example.com" },
+  { label: "Instagram", href: "https://instagram.com/yourhandle" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/yourprofile" },
 ];
 
 const versionBadges = [
@@ -87,8 +87,10 @@ export default function Footer() {
                 {linkItems.map((item, index) => (
                   <li key={index}>
                     <a
-                      href={`/${item.label.toLowerCase()}`}
+                      href={item.href}
                       className="[font-family:'Outfit',Helvetica] font-light text-neutral-600 text-base tracking-[0] leading-[normal] hover:text-neutral-900 transition-colors"
+                      target={item.label === "Analytics" ? "_blank" : undefined}
+                      rel={item.label === "Analytics" ? "noopener noreferrer" : undefined}
                     >
                       {item.label}
                     </a>
@@ -108,8 +110,10 @@ export default function Footer() {
                 {contactItems.map((item, index) => (
                   <li key={index}>
                     <a
-                      href="#"
+                      href={item.href}
                       className="[font-family:'Outfit',Helvetica] font-light text-neutral-600 text-base tracking-[0] leading-[normal] hover:text-neutral-900 transition-colors"
+                      target={item.label !== "Email" ? "_blank" : undefined}
+                      rel={item.label !== "Email" ? "noopener noreferrer" : undefined}
                     >
                       {item.label}
                     </a>
@@ -133,6 +137,8 @@ export default function Footer() {
                 key={index}
                 href={badge.href}
                 className="inline-flex no-underline cursor-pointer"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Badge
                   variant="outline"
