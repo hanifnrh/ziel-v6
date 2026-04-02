@@ -21,24 +21,19 @@ export default function GuestbookEntries() {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
+    typeof window !== "undefined" ? window.innerWidth : 1024,
   );
 
-  // Determine if we're on mobile (breakpoint at 768px)
   const isMobile = viewportWidth < 768;
 
-  // Get limit based on auth status AND screen size
   const getLimit = () => {
     if (user) {
-      // Logged in: 6 on desktop, 3 on mobile
       return isMobile ? 3 : 6;
     } else {
-      // Logged out: 9 on desktop, 6 on mobile
       return isMobile ? 6 : 9;
     }
   };
 
-  // Fetch entries with current limit and page
   const fetchEntries = async (page: number) => {
     setIsLoading(true);
     const limit = getLimit();
@@ -59,25 +54,21 @@ export default function GuestbookEntries() {
     setIsLoading(false);
   };
 
-  // Watch for window resize
   useEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // When limit changes (due to resize or auth), reset to page 1 and refetch
   useEffect(() => {
     setCurrentPage(1);
     fetchEntries(1);
-  }, [user, isMobile]); // isMobile depends on viewportWidth
+  }, [user, isMobile]);
 
-  // When page changes, fetch that page (without resetting)
   useEffect(() => {
     if (currentPage !== 1) fetchEntries(currentPage);
   }, [currentPage]);
 
-  // Initial auth listener
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -86,7 +77,7 @@ export default function GuestbookEntries() {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
-      }
+      },
     );
 
     return () => {
@@ -142,7 +133,7 @@ export default function GuestbookEntries() {
 
   const timeAgo = (dateStr: string) => {
     const seconds = Math.floor(
-      (new Date().getTime() - new Date(dateStr).getTime()) / 1000
+      (new Date().getTime() - new Date(dateStr).getTime()) / 1000,
     );
     let interval = seconds / 31536000;
     if (interval > 1) return Math.floor(interval) + " years ago";
@@ -171,11 +162,21 @@ export default function GuestbookEntries() {
     return pages;
   };
 
+  // Determine the provider and the corresponding logo
+  const getProviderLogo = () => {
+    const provider =
+      user?.app_metadata?.provider || user?.user_metadata?.provider || "";
+    if (provider === "github") return "/logos/github-logo.png";
+    if (provider === "google") return "/logos/google-logo.png";
+    return null; // fallback – no logo
+  };
+
+  const providerLogo = user ? getProviderLogo() : null;
+
   return (
     <div className="w-full flex flex-col items-center justify-center max-w-5xl mx-auto space-y-8 mt-10">
       {!user && (
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          {/* GitHub & Google buttons – unchanged */}
           <button onClick={() => signIn("github")}>
             <div className="group relative bg-white px-6 py-4 flex items-center gap-2 w-fit border-3 border-neutral-200 rounded-[24px] overflow-hidden cursor-pointer">
               <div className="absolute inset-0 bg-linear-to-t from-neutral-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -203,12 +204,10 @@ export default function GuestbookEntries() {
           className="w-full sm:w-160 bg-white backdrop-blur-sm rounded-[24px] p-4 space-y-4"
         >
           <div className="flex items-center justify-start gap-4 pt-2">
-            <img
-              src={user.user_metadata.avatar_url}
-              className="w-8 h-8 rounded-full"
-              alt=""
-            />
-            <span className="outfit-medium text-neutral-900">
+            {providerLogo && (
+              <img src={providerLogo} alt="Provider logo" className="w-4.5 h-4.5" />
+            )}
+            <span className="outfit-medium text-neutral-900 flex items-center gap-2">
               Hi, {user.user_metadata.full_name || user.email}
             </span>
           </div>
@@ -238,7 +237,9 @@ export default function GuestbookEntries() {
         </form>
       )}
 
-      {isLoading && <div className="text-white text-center">Loading messages...</div>}
+      {isLoading && (
+        <div className="text-white text-center">Loading messages...</div>
+      )}
 
       {!isLoading && (
         <>
