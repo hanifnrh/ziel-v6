@@ -34,6 +34,7 @@ export default function GuestbookEntries() {
     }
   };
 
+
   const fetchEntries = async (page: number) => {
     setIsLoading(true);
     const limit = getLimit();
@@ -54,21 +55,24 @@ export default function GuestbookEntries() {
     setIsLoading(false);
   };
 
+  // Reset page when auth or screen size changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [user, isMobile]);
+
+  // Fetch entries whenever the page (or dependencies) change
+  useEffect(() => {
+    fetchEntries(currentPage);
+  }, [currentPage, user, isMobile]);
+
+  // Resize listener
   useEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchEntries(1);
-  }, [user, isMobile]);
-
-  useEffect(() => {
-    if (currentPage !== 1) fetchEntries(currentPage);
-  }, [currentPage]);
-
+  // Auth listener
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -205,7 +209,11 @@ export default function GuestbookEntries() {
         >
           <div className="flex items-center justify-start gap-4 pt-2">
             {providerLogo && (
-              <img src={providerLogo} alt="Provider logo" className="w-4.5 h-4.5" />
+              <img
+                src={providerLogo}
+                alt="Provider logo"
+                className="w-4.5 h-4.5"
+              />
             )}
             <span className="outfit-medium text-neutral-900 flex items-center gap-2">
               Hi, {user.user_metadata.full_name || user.email}

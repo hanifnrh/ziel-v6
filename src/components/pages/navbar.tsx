@@ -10,7 +10,6 @@ import {
   Form,
 } from "lucide-react";
 
-// ✅ Add this interface for the props
 interface NavbarProps {
   currentPath: string;
 }
@@ -24,9 +23,7 @@ const inactiveItem = "text-white";
 const activeItem =
   "bg-white text-neutral-900 px-4 md:px-6 shadow-black/25 shadow-lg";
 
-// ✅ Update function to accept props
 function Navbar({ currentPath }: NavbarProps) {
-  // ✅ Helper function to check active state
   const isActive = (href: string) => {
     if (href === "/") return currentPath === href;
     return currentPath.startsWith(href);
