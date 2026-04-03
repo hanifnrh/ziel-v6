@@ -21,15 +21,19 @@ const currentPath = Astro.url.pathname;
       property="og:description"
       content="Ziel's blog."
     />
-    <meta
-      property="og:image"
-     content="https://ziel.work/images/zielwork.png"
-    />
+    <meta property="og:title" content="Blog" />
+    <meta property="og:image" content="https://ziel.work/images/zielwork.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://ziel.work" />
     <meta property="og:type" content="website" />
-    <title>Blog</title>
+
+    <!-- Twitter Card (recommended) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://ziel.work/images/zielwork.png"
+    />
   </head>
 
   <body>
