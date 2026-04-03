@@ -1,0 +1,10 @@
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ziel.work/sitemap-index.xml   # optional, if you generate a sitemap
